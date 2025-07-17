@@ -1,0 +1,329 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User management
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  medicalRecordNumber String? @unique
+  password       String
+  name           String?
+  role           UserRole  @default(PATIENT)
+  phoneNumber    String?
+  dateOfBirth    DateTime?
+  gender         Gender?
+  isActive       Boolean   @default(true)
+  emailVerified  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  // Relations
+  profile        Profile?
+  testResults    TestResult[]
+  recommendations Recommendation[]
+  orders         Order[]
+  addresses      Address[]
+  sessions       Session[]
+  
+  @@index([email])
+  @@index([medicalRecordNumber])
+}
+
+// Session management for NextAuth
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model Profile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  height          Float?   // in cm
+  weight          Float?   // in kg
+  activityLevel   ActivityLevel?
+  smokingStatus   Boolean  @default(false)
+  alcoholIntake   AlcoholIntake?
+  medicalHistory  Json?
+  allergies       String[]
+  currentMedications String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Test results
+model TestResult {
+  id              String   @id @default(cuid())
+  userId          String
+  testType        TestType
+  testDate        DateTime
+  labName         String?
+  fileUrl         String?
+  rawData         Json
+  parsedData      Json?
+  status          TestStatus @default(PENDING)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testItems       TestItem[]
+  recommendations Recommendation[]
+  
+  @@index([userId, testType])
+}
+
+model TestItem {
+  id              String   @id @default(cuid())
+  testResultId    String
+  itemName        String
+  value           Float
+  unit            String
+  referenceMin    Float?
+  referenceMax    Float?
+  status          ItemStatus
+  createdAt       DateTime @default(now())
+  
+  // Relations
+  testResult      TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+  
+  @@index([testResultId])
+}
+
+// Recommendations
+model Recommendation {
+  id              String   @id @default(cuid())
+  userId          String
+  testResultId    String?
+  status          RecommendationStatus @default(ACTIVE)
+  score           Float
+  reasoning       Json
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  expiresAt       DateTime?
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testResult      TestResult? @relation(fields: [testResultId], references: [id])
+  items           RecommendationItem[]
+  
+  @@index([userId, status])
+}
+
+model RecommendationItem {
+  id              String   @id @default(cuid())
+  recommendationId String
+  productId       String
+  priority        Int
+  dosage          String
+  frequency       String
+  duration        String?
+  notes           String?
+  
+  // Relations
+  recommendation  Recommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+  product         Product @relation(fields: [productId], references: [id])
+}
+
+// Products
+model Product {
+  id              String   @id @default(cuid())
+  name            String
+  nameEn          String?
+  description     String
+  category        ProductCategory
+  brand           String
+  ingredients     Json
+  dosageForm      String
+  packageSize     String
+  price           Decimal  @db.Decimal(10, 2)
+  stockQuantity   Int      @default(0)
+  imageUrl        String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  recommendations RecommendationItem[]
+  orderItems      OrderItem[]
+  
+  @@index([category, isActive])
+}
+
+// Orders
+model Order {
+  id              String   @id @default(cuid())
+  userId          String
+  orderNumber     String   @unique
+  status          OrderStatus @default(PENDING)
+  subtotal        Decimal  @db.Decimal(10, 2)
+  tax             Decimal  @db.Decimal(10, 2)
+  shipping        Decimal  @db.Decimal(10, 2)
+  total           Decimal  @db.Decimal(10, 2)
+  paymentMethod   PaymentMethod?
+  paymentStatus   PaymentStatus @default(PENDING)
+  shippingAddressId String?
+  trackingNumber  String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  shippingAddress Address? @relation(fields: [shippingAddressId], references: [id])
+  
+  @@index([userId, status])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id              String   @id @default(cuid())
+  orderId         String
+  productId       String
+  quantity        Int
+  unitPrice       Decimal  @db.Decimal(10, 2)
+  total           Decimal  @db.Decimal(10, 2)
+  
+  // Relations
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product  @relation(fields: [productId], references: [id])
+}
+
+model Address {
+  id              String   @id @default(cuid())
+  userId          String
+  type            AddressType
+  isDefault       Boolean  @default(false)
+  recipientName   String
+  phoneNumber     String
+  postalCode      String
+  prefecture      String
+  city            String
+  addressLine1    String
+  addressLine2    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders          Order[]
+  
+  @@index([userId])
+}
+
+// Enums
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHTLY_ACTIVE
+  MODERATELY_ACTIVE
+  VERY_ACTIVE
+  EXTREMELY_ACTIVE
+}
+
+enum AlcoholIntake {
+  NONE
+  OCCASIONAL
+  MODERATE
+  HEAVY
+}
+
+enum TestType {
+  BLOOD
+  URINE
+  BOTH
+}
+
+enum TestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ItemStatus {
+  NORMAL
+  LOW
+  HIGH
+  CRITICAL_LOW
+  CRITICAL_HIGH
+}
+
+enum RecommendationStatus {
+  ACTIVE
+  EXPIRED
+  PURCHASED
+  CANCELLED
+}
+
+enum ProductCategory {
+  VITAMIN
+  MINERAL
+  HERB
+  AMINO_ACID
+  OMEGA_FATTY_ACID
+  PROBIOTIC
+  ENZYME
+  OTHER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  CONVENIENCE_STORE
+  PAYPAL
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum AddressType {
+  HOME
+  OFFICE
+  OTHER
+}

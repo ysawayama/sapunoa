@@ -1,0 +1,25 @@
+{
+  "patterns": [
+    {
+      "id": "auth-flow",
+      "name": "認証フロー実装",
+      "category": "authentication",
+      "description": "NextAuth.jsを使用した患者・医師認証",
+      "implementation": "NextAuth.js with credentials provider",
+      "tags": ["auth", "security", "nextauth"]
+    },
+    {
+      "id": "data-viz",
+      "name": "検査結果可視化",
+      "category": "visualization",
+      "description": "Rechartsを使用したグラフ表示",
+      "implementation": "Recharts radar/heatmap charts",
+      "tags": ["charts", "visualization", "recharts"]
+    }
+  ],
+  "metadata": {
+    "created": "2025-07-11",
+    "lastUpdated": "2025-07-11",
+    "version": "1.0.0"
+  }
+}

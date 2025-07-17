@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.test-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f0f0f0;
+}

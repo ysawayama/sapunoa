@@ -1,0 +1,101 @@
+{
+  "name": "sapunoa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "血液検査・尿検査結果に基づく最適サプリメント提案・販売Webアプリケーション",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:e2e": "cypress run",
+    "analyze": "ANALYZE=true next build",
+    
+    "// Zeami Development Session Management": "",
+    "zeami:start": "zeami project start",
+    "zeami:stop": "zeami project stop",
+    "zeami:status": "zeami project status",
+    
+    "// Zeami Knowledge Management": "",
+    "zeami:log": "zeami doc log",
+    "zeami:learn": "zeami learn",
+    "zeami:auto-learn": "zeami learn auto",
+    "zeami:extract": "zeami extract",
+    "zeami:sync": "zeami sync",
+    "zeami:classify": "zeami classify",
+    "zeami:rank": "zeami rank",
+    
+    "// Zeami Development Support": "",
+    "zeami:type": "zeami type diagnose",
+    "zeami:validate": "zeami validate",
+    "zeami:hooks": "zeami hooks setup",
+    "zeami:enhance": "zeami enhance",
+    
+    "// Combined Commands": "",
+    "dev:zeami": "npm run zeami:start && npm run dev",
+    "commit:zeami": "npm run zeami:auto-learn && git add -A && git commit"
+  },
+  "dependencies": {
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@prisma/client": "^5.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "ioredis": "^5.3.2",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.263.1",
+    "next": "14.0.0",
+    "next-auth": "^4.24.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.0",
+    "recharts": "^2.7.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "autoprefixer": "^10.4.14",
+    "cypress": "^12.17.0",
+    "eslint": "^8.44.0",
+    "eslint-config-next": "14.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "jest": "^29.6.0",
+    "jest-environment-jsdom": "^29.6.0",
+    "postcss": "^8.4.25",
+    "prettier": "^3.0.0",
+    "prisma": "^5.0.0",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/sapunoa.git"
+  },
+  "keywords": [
+    "healthcare",
+    "supplement",
+    "nextjs",
+    "typescript",
+    "zeami"
+  ],
+  "author": "Your Organization",
+  "license": "UNLICENSED"
+}
