@@ -1,15 +1,12 @@
 {
-  "buildCommand": "npm list tailwindcss && npm run build",
+  "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "installCommand": "npm ci || npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
   "regions": ["hnd1"],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
+  "functions": {
+    "app/api/auth/[...nextauth]/route.ts": {
+      "maxDuration": 10
     }
   }
 }

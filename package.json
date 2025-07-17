@@ -7,7 +7,7 @@
     "dev": "next dev -p 3007 -H 0.0.0.0",
     "dev:mobile": "next dev -p 3007 -H 0.0.0.0",
     "dev:wsl": "next dev -p 3007 -H 0.0.0.0",
-    "build": "prisma generate && next build",
+    "build": "npm ls tailwindcss || true && prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
