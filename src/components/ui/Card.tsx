@@ -1,10 +1,10 @@
-﻿import { HTMLAttributes, forwardRef } from "react";
+import { HTMLAttributes, forwardRef } from "react";
 
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className = "", ...props }, ref) => (
     <div
       ref={ref}
-      className={ounded-lg border bg-card text-card-foreground shadow-sm }
+      className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}
       {...props}
     />
   )
@@ -15,7 +15,7 @@ const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className = "", ...props }, ref) => (
     <div
       ref={ref}
-      className={lex flex-col space-y-1.5 p-6 }
+      className={`flex flex-col space-y-1.5 p-6 ${className}`}
       {...props}
     />
   )
@@ -26,7 +26,7 @@ const CardTitle = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLHeadingEle
   ({ className = "", ...props }, ref) => (
     <h3
       ref={ref}
-      className={	ext-2xl font-semibold leading-none tracking-tight }
+      className={`text-2xl font-semibold leading-none tracking-tight ${className}`}
       {...props}
     />
   )
@@ -37,7 +37,7 @@ const CardDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLPara
   ({ className = "", ...props }, ref) => (
     <p
       ref={ref}
-      className={	ext-sm text-muted-foreground }
+      className={`text-sm text-muted-foreground ${className}`}
       {...props}
     />
   )
@@ -46,7 +46,7 @@ CardDescription.displayName = "CardDescription";
 
 const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className = "", ...props }, ref) => (
-    <div ref={ref} className={p-6 pt-0 } {...props} />
+    <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
   )
 );
 CardContent.displayName = "CardContent";
@@ -55,7 +55,7 @@ const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className = "", ...props }, ref) => (
     <div
       ref={ref}
-      className={lex items-center p-6 pt-0 }
+      className={`flex items-center p-6 pt-0 ${className}`}
       {...props}
     />
   )
